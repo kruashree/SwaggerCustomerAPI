@@ -4,16 +4,18 @@ info:
   description: This is a simple API
   contact:
     email: shree@gmail.com
-  version: 1.0.0
+  version: "3.00"
 servers:
 - url: https://virtserver.swaggerhub.com/hplusApi/Customer_API/1.0.0
   description: SwaggerHub API Auto Mocking
 tags:
-- name: Customer API
+- name: customer
   description: simple customer API
 paths:
   /customer:
     get:
+      tags:
+      - customer
       responses:
         "200":
           description: search results matching criteria
@@ -26,7 +28,9 @@ paths:
         "400":
           description: bad input parameter
     post:
-      description: Adds an new customer
+      tags:
+      - customer
+      description: Adding an new customer
       requestBody:
         content:
           application/json:
@@ -39,8 +43,13 @@ paths:
           description: invalid input, object invalid
         "409":
           description: an existing item already exists
+      security:
+      - password:
+        - write
   /customer/{customerId}:
     get:
+      tags:
+      - customer
       parameters:
       - name: customerId
         in: path
@@ -58,6 +67,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/customers'
     put:
+      tags:
+      - customer
       parameters:
       - name: customerId
         in: path
@@ -74,7 +85,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
+      security:
+      - password:
+        - write
     delete:
+      tags:
+      - customer
       parameters:
       - name: customerId
         in: path
@@ -87,6 +103,9 @@ paths:
       responses:
         "204":
           description: Customer is deleted -- No content to display
+      security:
+      - password:
+        - write
 components:
   schemas:
     customers:
@@ -141,3 +160,12 @@ components:
       schema:
         type: integer
         example: 1
+  securitySchemes:
+    password:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: http://example.com/oauth/token
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
